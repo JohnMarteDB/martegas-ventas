@@ -1,0 +1,10 @@
+# Only the public dashboard (docs/) is published. The full detailed dataset and
+# parse cache stay local/private (they contain payment-level detail and source refs).
+data/
+__pycache__/
+*.pyc
+.DS_Store
+desktop.ini
+
+# keep the published dashboard data (safe aggregates only)
+!docs/
