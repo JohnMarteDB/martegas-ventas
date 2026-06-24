@@ -42,10 +42,27 @@ def run(args, cwd=None):
     return p.returncode, out, err
 
 
+def _clean_git_drive_cruft():
+    """Google Drive injects desktop.ini files into the synced .git folder, which
+    can create 'broken ref' errors. Remove them before any git operation."""
+    gitdir = os.path.join(config.PROJECT_DIR, ".git")
+    removed = 0
+    for dp, _dn, fns in os.walk(gitdir):
+        for fn in fns:
+            if fn.lower() == "desktop.ini":
+                try:
+                    os.remove(os.path.join(dp, fn)); removed += 1
+                except OSError:
+                    pass
+    if removed:
+        log(f"git: cleaned {removed} stray desktop.ini from .git")
+
+
 def git_publish():
     if not os.path.isdir(os.path.join(config.PROJECT_DIR, ".git")):
         log("git: no repo yet (run scripts/setup_github.ps1) — skipping publish")
         return
+    _clean_git_drive_cruft()
     rc, *_ = run(["git", "remote"])
     rc, out, _ = run(["git", "status", "--porcelain"])
     if not out.strip():
