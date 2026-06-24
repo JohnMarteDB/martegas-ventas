@@ -172,6 +172,11 @@ def consolidate(cache):
     groups = defaultdict(list)
     errors = []
     ghosts = []
+    future = []
+    # Monthly workbooks (esp. GNV) often pre-fill upcoming day-sheets with
+    # projected values. A sale can't exist for a date after today, so drop those
+    # (they self-correct: once the day passes, the real value overwrites them).
+    today_iso = datetime.date.today().isoformat()
     for rel, entry in cache.items():
         if entry.get("error"):
             errors.append({"source_file": rel, "error": entry["error"]})
@@ -190,6 +195,9 @@ def consolidate(cache):
             if vol == 0 and rev == 0:
                 continue                       # empty / unfilled day
             r = dict(r, folder_ym=ym, _mtime=mt, _fday=fday)
+            if r["date"] > today_iso:
+                future.append(r)               # projected/pre-filled future day
+                continue
             if not in_window(r["date"], ym):
                 ghosts.append(r)
                 continue
@@ -234,7 +242,7 @@ def consolidate(cache):
                               "source_file": best.get("source_file")})
 
     rows.sort(key=lambda r: (r["date"], r["product"]))
-    return rows, anomalies, ghosts
+    return rows, anomalies, ghosts, future
 
 
 # canonical column order for the CSV
@@ -263,12 +271,13 @@ def write_outputs(rows, anomalies):
         w.writerows(anomalies)
 
 
-def summarize(rows, anomalies, ghosts):
+def summarize(rows, anomalies, ghosts, future):
     from collections import Counter
     print("\n===== CONSOLIDATION SUMMARY =====")
     print(f"clean daily records : {len(rows)}")
     print(f"anomalies/errors    : {len(anomalies)}")
     print(f"off-window ghosts   : {len(ghosts)} (excluded)")
+    print(f"future/projected    : {len(future)} (excluded)")
     for prod in config.PRODUCTS:
         pr = [r for r in rows if r["product"] == prod]
         if not pr:
@@ -305,9 +314,9 @@ def main():
     cache, _ = build_cache(rebuild=args.rebuild, workers=args.workers,
                            only=args.only, months=months)
     print("Consolidating...")
-    rows, anomalies, ghosts = consolidate(cache)
+    rows, anomalies, ghosts, future = consolidate(cache)
     write_outputs(rows, anomalies)
-    summarize(rows, anomalies, ghosts)
+    summarize(rows, anomalies, ghosts, future)
     print(f"\nWrote: {config.DAILY_CSV}")
 
 

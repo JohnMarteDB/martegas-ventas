@@ -80,10 +80,13 @@ def git_publish():
 
 def main():
     log("===== UPDATE START =====")
-    # Nightly: only scan the last few months for new files (gentle on DriveFS).
+    # Nightly: scan the last few months for new files (gentle on DriveFS).
     # The cache keeps all history and consolidate() rebuilds the full dataset.
-    # For corrections to OLD months, run a full pass manually: py src/consolidate.py
-    rc, *_ = run([PY, "-u", os.path.join("src", "consolidate.py"), "--recent", "2"])
+    # --recent 3 is a self-healing window: Google Drive File Stream sometimes
+    # hasn't synced a brand-new day-folder locally by run time, so a day missed
+    # one night is picked up the next. For corrections to OLDER months, run a
+    # full pass manually: py src/consolidate.py
+    rc, *_ = run([PY, "-u", os.path.join("src", "consolidate.py"), "--recent", "3"])
     if rc != 0:
         log("consolidate failed — aborting"); return 1
     rc, *_ = run([PY, "-u", os.path.join("src", "build_site.py")])
