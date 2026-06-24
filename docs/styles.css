@@ -1,81 +1,189 @@
+/* MarteGas — panel público. Tema CLARO, móvil primero, lenguaje sencillo.
+   Paleta con contraste WCAG AA verificado. */
 :root{
-  --bg:#0f1421; --panel:#171e2e; --panel2:#1f2940; --line:#2a3650;
-  --txt:#e8edf7; --muted:#8b97b0; --glp:#ff7a45; --gnv:#3ec9c0;
-  --good:#36d399; --bad:#f87272; --accent:#5b8def;
-  --shadow:0 6px 20px rgba(0,0,0,.28);
+  --bg:#F4F6F8;          /* fondo de la página */
+  --surface:#FFFFFF;     /* tarjetas */
+  --text:#14181F;        /* texto principal (AAA) */
+  --muted:#51606E;       /* etiquetas, ejes (AA) */
+  --glp:#0B5FA5;         /* azul GLP */
+  --glp-dark:#042C53;
+  --glp-soft:#E7F1FA;    /* tinte azul claro */
+  --gnv:#1B6B3A;         /* verde GNV */
+  --gnv-dark:#0F4524;
+  --gnv-soft:#E6F2EA;    /* tinte verde claro */
+  --good:#1B7A3D;        /* subió */
+  --good-soft:#E7F4EC;
+  --good-strong:#15622F;
+  --bad:#9E1626;         /* bajó */
+  --bad-soft:#FCE9EB;
+  --amber-bg:#FFF3D6;    /* aviso suave (mes en curso) */
+  --amber-text:#7A4D00;
+  --line:#E3E8EC;        /* líneas muy suaves */
+  --card-border:#EBEEF1;
+  --shadow:0 1px 3px rgba(20,24,31,.10), 0 1px 2px rgba(20,24,31,.06);
+  --accent:var(--glp);   /* color del producto activo (cambia por JS) */
+  --accent-soft:var(--glp-soft);
 }
+
 *{box-sizing:border-box}
-html,body{margin:0;padding:0}
+html{ -webkit-text-size-adjust:100%; }
+html,body{ margin:0; padding:0; }
 body{
-  background:linear-gradient(180deg,#0d1220,#0f1421 240px);
-  color:var(--txt);
-  font:15px/1.45 "Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:18px;
+  line-height:1.5;
   -webkit-font-smoothing:antialiased;
+  font-variant-numeric:tabular-nums;
 }
-.topbar{
-  display:flex;justify-content:space-between;align-items:center;
-  padding:18px 26px;border-bottom:1px solid var(--line);
-  background:rgba(15,20,33,.7);backdrop-filter:blur(6px);
-  position:sticky;top:0;z-index:10;
-}
-.brand{display:flex;gap:14px;align-items:center}
-.logo{font-size:30px}
-.brand h1{margin:0;font-size:22px;letter-spacing:.5px}
-.sub{margin:0;color:var(--muted);font-size:13px}
-.asof{text-align:right;font-size:13px}
-.muted{color:var(--muted)}
-main{max-width:1180px;margin:0 auto;padding:22px 18px 40px}
 
-/* overview strip */
-.overview{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:18px}
-.ov-item{
-  flex:1;min-width:180px;background:var(--panel);border:1px solid var(--line);
-  border-radius:14px;padding:16px 18px;box-shadow:var(--shadow);
-}
-.ov-item .big{font-size:26px;font-weight:700;margin-top:4px}
-.ov-item .lbl{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.6px}
+.wrap{ width:100%; max-width:520px; margin:0 auto; padding-left:16px; padding-right:16px; }
 
-/* tabs */
-.tabs{display:flex;gap:10px;margin:6px 0 18px}
-.tab{
-  cursor:pointer;padding:9px 18px;border-radius:999px;border:1px solid var(--line);
-  background:var(--panel);color:var(--muted);font-weight:600;font-size:14px;
-  transition:.15s;
+/* ---------- Encabezado ---------- */
+.topbar{ background:var(--glp); color:#fff; }
+.topbar-in{ padding-top:16px; padding-bottom:16px; }
+.title{ margin:0; font-size:24px; font-weight:800; letter-spacing:.2px; }
+.title span{ font-weight:600; opacity:.92; }
+.asof{
+  display:inline-block; margin:12px 0 0;
+  background:#fff; color:var(--text);
+  font-weight:700; font-size:17px;
+  padding:8px 16px; border-radius:999px;
 }
-.tab:hover{color:var(--txt)}
-.tab.active{color:#fff;border-color:transparent}
-.tab.active.GLP{background:var(--glp)}
-.tab.active.GNV{background:var(--gnv);color:#06201e}
 
-/* kpi cards */
-.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:22px}
+/* ---------- Selector de producto ---------- */
+.products{
+  display:grid; grid-template-columns:1fr 1fr; gap:12px;
+  margin:18px 0 10px;
+}
+.product-btn{
+  min-height:76px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:3px; padding:10px 8px; cursor:pointer;
+  background:#fff; border-radius:16px; border:2px solid var(--line);
+  font-size:18px; font-weight:800; line-height:1.2; color:var(--text);
+  text-align:center; transition:transform .04s ease;
+}
+.product-btn .ico{ width:30px; height:30px; display:block; }
+.product-btn .pname{ font-size:19px; }
+.product-btn .psub{ font-size:14px; font-weight:600; color:var(--muted); }
+.product-btn .check{ display:none; }
+.product-btn:active{ transform:scale(.99); }
+
+.product-btn.glp{ color:var(--glp); border-color:#CFE0EF; }
+.product-btn.gnv{ color:var(--gnv); border-color:#CFE6D7; }
+
+.product-btn.is-on{ color:#fff; }
+.product-btn.is-on .psub{ color:rgba(255,255,255,.92); }
+.product-btn.is-on .check{ display:inline-flex; }
+.product-btn.glp.is-on{ background:var(--glp); border-color:var(--glp-dark); border-width:3px; }
+.product-btn.gnv.is-on{ background:var(--gnv); border-color:var(--gnv-dark); border-width:3px; }
+
+.viewing{ margin:2px 0 16px; font-size:17px; color:var(--muted); text-align:center; }
+.viewing b{ color:var(--text); }
+
+/* ---------- Tarjetas ---------- */
+.card{
+  background:var(--surface); border:1px solid var(--card-border); border-radius:18px;
+  padding:18px; margin-bottom:14px; box-shadow:var(--shadow);
+}
+.card-title{ margin:0 0 12px; font-size:21px; font-weight:800; }
+.lbl{ font-size:17px; font-weight:700; color:var(--muted); margin:0; }
+
+/* Héroe: ventas de este mes */
+.hero{ border-top:6px solid var(--accent); }
+.hero .lbl{ color:var(--muted); }
+.hero .big{ font-size:44px; line-height:1.05; font-weight:800; margin:8px 0 6px; color:var(--text); }
+.hero .exact{ font-size:18px; color:var(--muted); margin:0; font-weight:600; }
+.note{
+  margin-top:14px; background:var(--amber-bg); color:var(--amber-text);
+  border-radius:12px; padding:12px 14px; font-size:17px; font-weight:600;
+  display:flex; gap:10px; align-items:flex-start;
+}
+.note .ni{ flex:0 0 auto; font-size:20px; line-height:1.2; }
+
+/* KPI grandes (una columna) */
+.kpis{ display:block; }
 .kpi{
-  background:var(--panel);border:1px solid var(--line);border-radius:14px;
-  padding:15px 16px;box-shadow:var(--shadow);position:relative;overflow:hidden;
+  background:var(--surface); border:1px solid var(--card-border); border-radius:18px;
+  padding:16px 18px; margin-bottom:14px; box-shadow:var(--shadow);
+  border-left:6px solid var(--accent);
 }
-.kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--accent)}
-.kpi.glp::before{background:var(--glp)}
-.kpi.gnv::before{background:var(--gnv)}
-.kpi .lbl{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.5px}
-.kpi .val{font-size:23px;font-weight:700;margin-top:6px}
-.kpi .sub{font-size:12px;color:var(--muted);margin-top:4px}
-.delta{font-weight:700}
-.delta.up{color:var(--good)} .delta.down{color:var(--bad)}
+.kpi .big{ font-size:34px; line-height:1.1; font-weight:800; margin:6px 0 4px; }
+.kpi .sub{ font-size:17px; color:var(--muted); margin:0; font-weight:600; }
 
-/* charts */
-.charts{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.chart-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;
-  padding:14px 16px 8px;box-shadow:var(--shadow)}
-.chart-card.wide{grid-column:1 / -1}
-.chart-card h3{margin:2px 0 12px;font-size:15px;font-weight:600}
-.chart-card .unit{color:var(--muted);font-weight:400;font-size:13px}
-.chart-card canvas{width:100%!important;height:300px!important}
+/* Veredicto (subió / bajó) */
+.verdict .vmain{ display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+  font-size:30px; font-weight:800; margin:10px 0 6px; }
+.vmain .varrow{ font-size:30px; line-height:1; }
+.vmain .vsuffix{ font-size:18px; font-weight:700; color:var(--muted); }
+.vdetail{ font-size:18px; margin:0; }
+.vnote{ font-size:17px; color:var(--muted); margin:12px 0 0; }
+.up{ color:var(--good); }
+.down{ color:var(--bad); }
+.flat{ color:var(--muted); }
+.vchip-flat{ font-size:24px; font-weight:800; color:var(--muted); margin:10px 0 4px; }
 
-footer{max-width:1180px;margin:0 auto;padding:18px;color:var(--muted);font-size:12px;
-  border-top:1px solid var(--line);text-align:center}
+/* Comparación año contra año */
+.yoycard .vlabel{ font-size:21px; font-weight:800; margin:0 0 14px; }
+.yoy-pair{ display:flex; flex-direction:column; align-items:center; gap:6px; text-align:center; }
+.yoy-one{ width:100%; padding:12px 10px; border-radius:14px; background:var(--bg); }
+.yoy-one.now{ background:var(--accent-soft); }
+.yoy-when{ font-size:17px; font-weight:700; color:var(--muted); }
+.yoy-amt{ font-size:26px; font-weight:800; color:var(--text); margin-top:2px; }
+.yoy-arrow{ font-size:30px; line-height:1; }
+.yoycard .vmain{ justify-content:center; text-align:center; margin-top:14px; }
 
-@media (max-width:760px){
-  .charts{grid-template-columns:1fr}
-  .topbar{padding:14px}
-  .brand h1{font-size:19px}
+/* ---------- Gráfico ---------- */
+.chart-range{ margin:0 0 14px; font-size:17px; font-weight:600; color:var(--muted); }
+.toggle{ display:flex; gap:10px; margin:0 0 12px; }
+.toggle-btn{
+  flex:1; min-height:52px; cursor:pointer;
+  background:#fff; border:2px solid var(--line); border-radius:12px;
+  font-size:17px; font-weight:700; color:var(--muted);
+}
+.toggle-btn.is-on{ background:var(--accent); border-color:var(--accent); color:#fff; }
+.chart-box{ position:relative; height:260px; }
+.chart-box canvas{ width:100%!important; height:100%!important; }
+.chart-note{ font-size:17px; color:var(--muted); margin:12px 0 0; }
+
+/* ---------- Pie ---------- */
+.site-foot{ padding-top:8px; padding-bottom:32px; color:var(--muted); font-size:17px; }
+.site-foot .foot-row{ margin:0 0 8px; }
+.site-foot .foot-strong{ color:var(--text); font-weight:700; }
+.site-foot .foot-updated{
+  display:inline-flex; align-items:center; gap:8px;
+  color:var(--good-strong); background:var(--good-soft);
+  padding:8px 14px; border-radius:999px; font-weight:700; font-size:17px; margin-bottom:12px;
+}
+
+/* ---------- Carga / error ---------- */
+.loading,.failed{ padding:40px 8px; text-align:center; color:var(--muted); font-size:18px; }
+.failed{ color:var(--bad); font-weight:700; }
+
+/* ---------- Foco visible (teclado) ---------- */
+:focus-visible{ outline:3px solid var(--glp); outline-offset:3px; border-radius:8px; }
+.product-btn.is-on:focus-visible,
+.toggle-btn.is-on:focus-visible{
+  outline:none; box-shadow:0 0 0 3px #fff, 0 0 0 6px var(--glp);
+}
+
+@media (prefers-reduced-motion:reduce){
+  *{ transition:none!important; }
+}
+
+/* ---------- Pantallas grandes (se mantiene tipo teléfono, centrado) ---------- */
+@media (min-width:768px){
+  body{ font-size:19px; }
+  .wrap{ max-width:560px; }
+  .title{ font-size:26px; }
+  .hero .big{ font-size:54px; }
+  .kpi .big{ font-size:38px; }
+  .chart-box{ height:300px; }
+}
+
+/* ---------- Pantallas muy angostas ---------- */
+@media (max-width:340px){
+  .hero .big{ font-size:38px; }
+  .product-btn .pname{ font-size:17px; }
 }

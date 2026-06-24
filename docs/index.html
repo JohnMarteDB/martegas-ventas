@@ -2,71 +2,62 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>MarteGas · Panel de Ventas</title>
-<meta name="description" content="Panel de ventas diarias de GLP y GNV — MarteGas" />
-<link rel="stylesheet" href="styles.css" />
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>MarteGas — Ventas</title>
+<meta name="description" content="Resumen sencillo de las ventas de MarteGas: Gas GLP (cocina) y Gas Natural (GNV)." />
+<meta name="theme-color" content="#0B5FA5" />
+<link rel="stylesheet" href="styles.css?v=4" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+<script src="app.js?v=4" defer></script>
 </head>
 <body>
+
 <header class="topbar">
-  <div class="brand">
-    <span class="logo">🔥</span>
-    <div>
-      <h1>MarteGas</h1>
-      <p class="sub">Panel de Ventas · GLP &amp; GNV</p>
-    </div>
-  </div>
-  <div class="asof">
-    <div id="asof-line">—</div>
-    <div class="muted" id="gen-line">—</div>
+  <div class="wrap topbar-in">
+    <h1 class="title">MarteGas <span>· Ventas</span></h1>
+    <p class="asof" id="asof">Datos al —</p>
   </div>
 </header>
 
-<main>
-  <!-- combined overview -->
-  <section class="overview" id="overview"></section>
+<main class="wrap" id="app">
 
-  <!-- product selector -->
-  <nav class="tabs" id="tabs"></nav>
+  <!-- 1. Selector de producto -->
+  <nav class="products" id="products" aria-label="Elegir producto"></nav>
+  <p class="viewing" id="viewing" aria-live="polite"></p>
 
-  <!-- KPI cards -->
-  <section class="kpi-grid" id="kpis"></section>
+  <!-- 2. Ventas de este mes (héroe) -->
+  <section class="card hero" id="hero"></section>
 
-  <!-- charts -->
-  <section class="charts">
-    <div class="card chart-card wide">
-      <h3>Volumen mensual <span class="unit" id="u-volm"></span></h3>
-      <canvas id="chart-vol-month"></canvas>
+  <!-- 3. Tarjetas grandes -->
+  <section class="kpis" id="kpis"></section>
+
+  <!-- 4. Comparado con el mes pasado -->
+  <section class="card verdict" id="cmp-month"></section>
+
+  <!-- 5. Gráfico: ventas mes por mes -->
+  <section class="card chart-card">
+    <h2 class="card-title" id="chart-title">Ventas mes por mes</h2>
+    <p class="chart-range" id="chart-range"></p>
+    <div class="toggle" role="group" aria-label="Ver el gráfico en dinero o en cantidad">
+      <button type="button" id="t-money" class="toggle-btn is-on" aria-pressed="true">RD$ (dinero)</button>
+      <button type="button" id="t-vol" class="toggle-btn" aria-pressed="false">Cantidad</button>
     </div>
-    <div class="card chart-card wide">
-      <h3>Ingresos mensuales <span class="unit">RD$</span></h3>
-      <canvas id="chart-rev-month"></canvas>
+    <div class="chart-box">
+      <canvas id="barchart" role="img" aria-label="Gráfico de ventas mes por mes"></canvas>
     </div>
-    <div class="card chart-card">
-      <h3>Evolución del precio <span class="unit" id="u-price"></span></h3>
-      <canvas id="chart-price"></canvas>
-    </div>
-    <div class="card chart-card">
-      <h3>Mezcla de pago <span class="muted" id="mix-month"></span></h3>
-      <canvas id="chart-mix"></canvas>
-    </div>
-    <div class="card chart-card wide">
-      <h3>Volumen diario <span class="muted">(últimos 120 días con ventas)</span></h3>
-      <canvas id="chart-daily"></canvas>
-    </div>
-    <div class="card chart-card wide">
-      <h3>Estacionalidad — volumen por mes, comparado por año</h3>
-      <canvas id="chart-season"></canvas>
-    </div>
+    <p class="chart-note" id="chart-note"></p>
   </section>
+
+  <!-- 6. Comparado con el año pasado -->
+  <section class="card yoycard" id="cmp-year"></section>
+
 </main>
 
-<footer>
-  <p>Datos consolidados automáticamente de los cuadres de ventas diarios (2019–presente).
-     Solo se publican totales agregados de ventas. <span id="rec-count"></span></p>
-</footer>
+<footer class="wrap site-foot" id="foot"></footer>
 
-<script src="app.js"></script>
+<script>
+  // Mensaje claro si el panel no carga (sin tecnicismos).
+  window.addEventListener("error", function () {}, true);
+</script>
 </body>
 </html>
