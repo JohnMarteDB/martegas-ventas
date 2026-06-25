@@ -138,6 +138,11 @@
   function renderHero(d){
     var k = d.kpis, u = d.unit;
     var mes = cap(mesDe(k.current_month));
+    // Días del mes que llevamos = día del mes de la última fecha con datos
+    // (coincide con "Datos al DD de ..."). NO usar k.mtd_days: ese cuenta solo
+    // los días CON ventas, por eso GLP mostraba "14" estando ya por el día 22.
+    var diaMes = (k.as_of && k.as_of.length >= 10)
+      ? parseInt(k.as_of.slice(8, 10), 10) : k.mtd_days;
     // ritmo del mes en curso vs. promedio normal (honesto, calculado del JSON)
     var ritmo = "";
     if (k.mtd_days > 0 && k.avg_daily_revenue_30 > 0){
@@ -152,7 +157,7 @@
       '<p class="big">' + pesosGrandes(k.mtd_revenue) + '</p>' +
       '<p class="exact">' + money(k.mtd_revenue) + ' · ' + cantidad(k.mtd_volume, u) + '</p>' +
       '<div class="note"><span class="ni" aria-hidden="true">ℹ️</span><span>' +
-        mes + ' todavía no termina. Llevamos ' + k.mtd_days + ' día' + (k.mtd_days === 1 ? "" : "s") + '.' + ritmo +
+        mes + ' todavía no termina. Llevamos ' + diaMes + ' día' + (diaMes === 1 ? "" : "s") + '.' + ritmo +
       '</span></div>';
   }
 
